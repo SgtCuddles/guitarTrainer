@@ -4,110 +4,92 @@ import java.util.Random;
 public class GuitarTrainer{
 
    public static void main(String[] args){
-      char note = 'x';
+      char[] notes = new char[] {'a', 'b', 'c', 'd', 'e', 'f', 'g'};
+      char noteLetter = 'x';
+      String note = "";
       boolean hard = false;
       Scanner userInput = new Scanner(System.in);
       Random rand = new Random();
       
-      int noteNum = Math.abs(rand.nextInt())%7;
+      int noteNum = Math.abs(rand.nextInt())%7;//picks note letter
+      noteLetter = notes[noteNum];//sets note letter
+      noteNum = Math.abs(rand.nextInt(4))+2;//picks note number
+      note = "" + noteLetter + noteNum;//combines note for final value
       
-      System.out.print("Note :\t" + lineToNote(noteNum) + "\n" + drawStaff(hard, noteNum) + "\n");
+      for(int j = 2; j <=5; j++)
+      {
+         for(int i = 0; i <=6; i++)
+         {
+            String tmp = "" + notes[(i+4)%7]+""+j;
+            System.out.println(getLimit(tmp) + " " + tmp);
+         }
+      }
+      
+      //drawStaff(note);
    }
    
-   //draws staff with note when given a note and difficulty boolean
-   public static String drawStaff(boolean hard, int note){
+   public String drawStaff(String note){
+      int upperLimit = 5;
+      int lowerLimit = 15;
       String[] staff = new String[] {
-                        "       =      ", "F |----_------",
-                        " E|    =      ", "D |----_------",
-                        " C|    =      ", "B |----_------",
-                        " A|    =      ", "G |----_------",
-                        " F|    =      ", "E |----_------",
-                        "       =      "};
-      String printAble = "";
-      for(int i = 0; i < staff.length; i++){
-         String tmp = staff[i];
-         if (i == note){
-            if (i%2 == 1){
-               tmp = tmp.replace('_','O');
-            }
-            else{
-               tmp = tmp.replace('=','O');
-            }
-         }
-         else{
-            if (i%2 == 1){
-               tmp = tmp.replace('_','-');
-            }
-            else{
-               tmp = tmp.replace('=',' ');
-            }
-         
-         if (hard){
-            tmp = tmp.substring(2);
-            }
-         }
-         
-         printAble += tmp + "\n";
+                        "E     _=_     ", " D     =      ",
+                        "C     _=_     ", " B     =      ", 
+                        "A     _=_     ", " G     =      ", 
+                        "F |----_------", " E|    =      ",
+                        "D |----_------", " C|    =      ",
+                        "B |----_------", " A|    =      ",
+                        "G |----_------", " F|    =      ",
+                        "E |----_------", " D     =      ",
+                        "C     _=_     ", " B     =      ",
+                        "A     _=_     ", " G     =      ",
+                        "F     _=_     ", " E     =      "};
+      //sets viewing area
+      int tmpLimit = getLimit(note);
+      if(tmpLimit<5)
+      {
+         upperLimit = tmpLimit;
       }
-      return printAble;
+      if(tmpLimit>15)
+      {
+         lowerLimit = tmpLimit;
+      }
+      return(note + " " + tmpLimit);
    }
    
-   //converts line address to note
-   public static char lineToNote(int note)
+   //if note doesn't fit on base staff, this extends the viewing area
+   public static int getLimit(String note)
    {
-      if(note%7==4){
-         return 'C';
+      int limit = 5;
+      if(Character.getNumericValue(note.charAt(1)) >= 4)
+      {
+         if(note.charAt(0) == 'a' || note.charAt(0) == 'b' )//a4 b4
+         {
+            limit = 3;
+         }
+         else if((note.charAt(0) == 'c' || note.charAt(0) == 'd') && Character.getNumericValue(note.charAt(1)) > 4)//c5 d5
+         {
+            limit = 1;
+         }
+         else if(note.charAt(0) == 'e' && Character.getNumericValue(note.charAt(1)) > 4)//e5
+         {
+            limit = 0;
+         }
       }
-      else if(note%7==3){
-         return 'D';
+      else if(Character.getNumericValue(note.charAt(1)) <= 3)
+      {
+         if(note.charAt(0) == 'c' || note.charAt(0) == 'b' && note.charAt(1) != '3' )//c3 b2
+         {
+            limit = 17;
+         }
+         else if((note.charAt(0) == 'a' || note.charAt(0) == 'g') && Character.getNumericValue(note.charAt(1)) < 3)//a2 g2
+         {
+            limit = 19;
+         }
+         else if((note.charAt(0) == 'f' || note.charAt(0) == 'e') && Character.getNumericValue(note.charAt(1)) < 3)//f2 e2
+         {
+            limit = 21;
+         }
       }
-      else if(note%7==2){
-         return 'E';
-      }
-      else if(note%7==1){
-         return 'F';
-      }
-      else if(note%7==0){
-         return 'G';
-      }
-      else if(note%7==6){
-         return 'A';
-      }
-      else if(note%7==5){
-         return 'B';
-      }
-      return 'x';
-   }
-   
-   //converts note to staff array address
-   public static int noteToLine(String note){
-      if (note.equals("e1")){
-         return 9;
-      }
-      else if (note.equals("f1")){
-         return 8;
-      }
-      else if (note.equals("g1")){
-         return 7;
-      }
-      else if (note.equals("a1")){
-         return 6; 
-      }
-      else if (note.equals("b1")){
-         return 5;
-      }
-      else if (note.equals("c1")){
-         return 4;
-      }
-      else if (note.equals("d1")){
-         return 3;
-      }
-      else if (note.equals("e2")){
-         return 2;
-      }
-      else if (note.equals("f2")){
-         return 1;
-      }
-   return -1;
+      return limit;
    }
 }
