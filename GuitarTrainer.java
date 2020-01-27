@@ -11,40 +11,39 @@ public class GuitarTrainer{
       Scanner userInput = new Scanner(System.in);
       Random rand = new Random();
       
-      int noteNum = Math.abs(rand.nextInt())%7;//picks note letter
-      noteLetter = notes[noteNum];//sets note letter
-      noteNum = Math.abs(rand.nextInt(4))+2;//picks note number
-      note = "" + noteLetter + noteNum;//combines note for final value
-      
-      for(int j = 2; j <=5; j++)
+      int check = -1;
+      while(check == -1)
       {
-         for(int i = 0; i <=6; i++)
-         {
-            String tmp = "" + notes[(i+4)%7]+""+j;
-            System.out.println(getLimit(tmp) + " " + tmp);
-         }
+         int noteNum = Math.abs(rand.nextInt())%7;//picks note letter
+         noteLetter = notes[noteNum];//sets note letter
+         noteNum = Math.abs(rand.nextInt(4))+2;//picks note number
+         note = "" + noteLetter + noteNum;//combines note for final value
+         
+         check = getValue(note);
       }
       
-      //drawStaff(note);
+      
+      
+      System.out.print(drawStaff(note));
    }
    
-   public String drawStaff(String note){
+   public static String drawStaff(String note){
       int upperLimit = 5;
       int lowerLimit = 15;
       String[] staff = new String[] {
-                        "E     _=_     ", " D     =      ",
-                        "C     _=_     ", " B     =      ", 
-                        "A     _=_     ", " G     =      ", 
-                        "F |----_------", " E|    =      ",
-                        "D |----_------", " C|    =      ",
-                        "B |----_------", " A|    =      ",
-                        "G |----_------", " F|    =      ",
-                        "E |----_------", " D     =      ",
-                        "C     _=_     ", " B     =      ",
-                        "A     _=_     ", " G     =      ",
-                        "F     _=_     ", " E     =      "};
+                        "E     -=-     ", " D     =      ",
+                        "C     -=-     ", " B     =      ", 
+                        "A     -=-     ", " G     =      ", 
+                        "F |----=------", " E|    =      ",
+                        "D |----=------", " C|    =      ",
+                        "B |----=------", " A|    =      ",
+                        "G |----=------", " F|    =      ",
+                        "E |----=------", " D     =      ",
+                        "C     -=-     ", " B     =      ",
+                        "A     -=-     ", " G     =      ",
+                        "F     -=-     ", " E     =      "};
       //sets viewing area
-      int tmpLimit = getLimit(note);
+      int tmpLimit = getValue(note);
       if(tmpLimit<5)
       {
          upperLimit = tmpLimit;
@@ -53,43 +52,147 @@ public class GuitarTrainer{
       {
          lowerLimit = tmpLimit;
       }
-      return(note + " " + tmpLimit);
+      //sets up staff to print
+      String printable = note + "\n";
+      
+      for(int i = upperLimit; i <= lowerLimit; i++)
+      {
+         String tmpLine = staff[i];
+         if(getValue(note) == i)
+         {
+         tmpLine = tmpLine.replace('=', 'O');
+         }
+         else
+         {
+            if(i%2 == 0)
+            {
+               tmpLine = tmpLine.replace('=', '-');
+            }
+            else
+            {
+            tmpLine = tmpLine.replace('=', ' ');
+            }
+         }
+         printable = printable + "\n" + tmpLine;
+      }
+      return printable;
    }
    
-   //if note doesn't fit on base staff, this extends the viewing area
-   public static int getLimit(String note)
+   //gives staff note value to determine where to draw
+   //and how many staff lines are needed
+   public static int getValue(String note)
    {
       int limit = 5;
-      if(Character.getNumericValue(note.charAt(1)) >= 4)
+      if(note.charAt(1) == '5')
       {
-         if(note.charAt(0) == 'a' || note.charAt(0) == 'b' )//a4 b4
-         {
-            limit = 3;
-         }
-         else if((note.charAt(0) == 'c' || note.charAt(0) == 'd') && Character.getNumericValue(note.charAt(1)) > 4)//c5 d5
-         {
-            limit = 1;
-         }
-         else if(note.charAt(0) == 'e' && Character.getNumericValue(note.charAt(1)) > 4)//e5
+         if(note.charAt(0) == 'e')
          {
             limit = 0;
          }
+         if(note.charAt(0) == 'd')
+         {
+            limit = 1;
+         }
+         if(note.charAt(0) == 'c')
+         {
+            limit = 2;
+         }
+         else
+         {
+            return -1;
+         }
       }
-      else if(Character.getNumericValue(note.charAt(1)) <= 3)
+      else if(note.charAt(1) == '4')
       {
-         if(note.charAt(0) == 'c' || note.charAt(0) == 'b' && note.charAt(1) != '3' )//c3 b2
+         if(note.charAt(0) == 'b')
+         {
+            limit = 3;
+         }
+         if(note.charAt(0) == 'a')
+         {
+            limit = 4;
+         }
+         if(note.charAt(0) == 'g')
+         {
+            limit = 5;
+         }
+         if(note.charAt(0) == 'f')
+         {
+            limit = 6;
+         }
+         if(note.charAt(0) == 'e')
+         {
+            limit = 7;
+         }
+         if(note.charAt(0) == 'd')
+         {
+            limit = 8;
+         }
+         if(note.charAt(0) == 'c')
+         {
+            limit = 9;
+         }
+      }
+      else if(note.charAt(1) == '3')
+      {
+         if(note.charAt(0) == 'b')
+         {
+            limit = 10;
+         }
+         if(note.charAt(0) == 'a')
+         {
+            limit = 11;
+         }
+         if(note.charAt(0) == 'g')
+         {
+            limit = 12;
+         }
+         if(note.charAt(0) == 'f')
+         {
+            limit = 13;
+         }
+         if(note.charAt(0) == 'e')
+         {
+            limit = 14;
+         }
+         if(note.charAt(0) == 'd')
+         {
+            limit = 15;
+         }
+         if(note.charAt(0) == 'c')
+         {
+            limit = 16;
+         }
+      }
+      else if(note.charAt(1) == '2')
+      {
+         if(note.charAt(0) == 'b')
          {
             limit = 17;
          }
-         else if((note.charAt(0) == 'a' || note.charAt(0) == 'g') && Character.getNumericValue(note.charAt(1)) < 3)//a2 g2
+         if(note.charAt(0) == 'a')
+         {
+            limit = 18;
+         }
+         if(note.charAt(0) == 'g')
          {
             limit = 19;
          }
-         else if((note.charAt(0) == 'f' || note.charAt(0) == 'e') && Character.getNumericValue(note.charAt(1)) < 3)//f2 e2
+         if(note.charAt(0) == 'f')
+         {
+            limit = 20;
+         }
+         if(note.charAt(0) == 'e')
          {
             limit = 21;
+         }
+         else
+         {
+            return -1;
          }
       }
       return limit;
    }
+   
+   
 }
